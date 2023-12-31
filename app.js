@@ -17,12 +17,6 @@ const firebaseConfig = {
 // Initialize Firebase
 
 const app = window.firebase.initializeApp(firebaseConfig);
-
-const montclair = { lat: 40.8259, lng: -74.2090 };
-const map = new google.maps.Map(document.getElementById("map"), {
-  zoom: 13,
-  center: montclair,
-});
     
 let bikesListElement = document.getElementById('bikesList');
 let checkOutControls = document.getElementById('checkOutControls');
