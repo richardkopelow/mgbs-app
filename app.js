@@ -46,7 +46,7 @@ function initMap()
   var pinSVGFilled = "M 12,2 C 8.1340068,2 5,5.1340068 5,9 c 0,5.25 7,13 7,13 0,0 7,-7.75 7,-13 0,-3.8659932 -3.134007,-7 -7,-7 z";
   var labelOriginFilled =  new google.maps.Point(12,-5);
   
-  let selectedBike = {};
+  let selectedBike = false;
   function selectBike(data) {
     selectedBike = data;
     checkOutControls.style = `visibility: ${data.status === 0?'visible':'hidden'};`;
@@ -106,8 +106,6 @@ function initMap()
     
   });
   
-  let selectionInited = false;
-  
   bikes.onSnapshot(qs=>{
     bikesListElement.innerHTML = '';
       markerList.forEach(m => m.setMap(null));
@@ -116,10 +114,16 @@ function initMap()
       qs.docs.forEach(doc=>{
         let data = doc.data();
         bikesListElement.innerHTML += `<option value=\"${data.guid}\">${data.name}</option>`;
-        if(!selectionInited)
+        if(!selectedBike)
         {
-          selectBike(data);
-          selectionInited = true;
+          selectBike(data)
+        }
+        else
+        {
+          if(selectedBike.guid === data.guid)
+          {
+            selectBike(data);
+          }
         }
   
         var markerImage = {
