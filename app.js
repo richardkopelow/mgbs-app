@@ -25,8 +25,9 @@ function initMap()
     zoom: 13,
     center: montclair,
   });
-      
-  let bikesListElement = document.getElementById('bikesList');
+
+  let bikesListButton = document.getElementById('bikesListButton');
+  let bikesListContainer = document.getElementById('bikesListContainer');
   let checkOutControls = document.getElementById('checkOutControls');
   let checkInControls = document.getElementById('checkInControls');
   
@@ -37,7 +38,6 @@ function initMap()
   
   let bikes = db.collection('BikeStatus');
   
-  bikesListElement.innerHTML = '';
   var markerList = [];
   
   // Pick your pin (hole or no hole)
@@ -49,16 +49,13 @@ function initMap()
   let selectedBike = false;
   function selectBike(data) {
     selectedBike = data;
+    bikesListButton.innerHTML = data.name;
     checkOutControls.style = `visibility: ${data.status === 0?'visible':'hidden'};`;
     checkInControls.style = `visibility: ${data.status === 1?'visible':'hidden'};`;
   }
   
-  bikesListElement.addEventListener("change", ()=>{
-    bikes.where('guid', '==', bikesListElement.value).get().then(qs=>selectBike(qs.docs[0].data()));
-  });
-  
   checkOutButton.addEventListener("click", () => {
-    bikes.where('guid', '==', bikesListElement.value).get().then(qs=>{
+    bikes.where('guid', '==', selectedBike.guid).get().then(qs=>{
       let doc = qs.docs[0];
       doc.ref.update({
         status: 1,
@@ -79,7 +76,7 @@ function initMap()
         const lat = position.coords.latitude;
         const long = position.coords.longitude;
   
-        bikes.where('guid', '==', bikesListElement.value).get().then(qs=>{
+        bikes.where('guid', '==', selectedBike.guid).get().then(qs=>{
           let doc = qs.docs[0];
           doc.ref.update({
             location: {
@@ -107,13 +104,21 @@ function initMap()
   });
   
   bikes.onSnapshot(qs=>{
-    bikesListElement.innerHTML = '';
       markerList.forEach(m => m.setMap(null));
       markerList = [];
+      bikesListContainer.innerHTML = '';
   
       qs.docs.forEach(doc=>{
         let data = doc.data();
-        bikesListElement.innerHTML += `<option value=\"${data.guid}\">${data.name}</option>`;
+        let dropdownItemId = `bikeSelect${data.guid}`;
+        let li = document.createElement('li');
+        li.innerHTML = `<a id="${dropdownItemId}" class="dropdown-item" href="#">${data.name}</a>`;
+        let dropdownItem = li.firstChild;
+        dropdownItem.addEventListener('click', function(){
+          selectBike(data)
+        });
+        bikesListContainer.appendChild(li);
+
         if(!selectedBike)
         {
           selectBike(data)
@@ -152,7 +157,6 @@ function initMap()
   
         mark.addListener('click', () =>
         {
-          bikesListElement.value = data.guid;
           selectBike(data);
         });
   
