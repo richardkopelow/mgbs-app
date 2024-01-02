@@ -50,8 +50,8 @@ function initMap()
   function selectBike(data) {
     selectedBike = data;
     bikesListButton.innerHTML = data.name;
-    checkOutControls.style = `visibility: ${data.status === 0?'visible':'hidden'};`;
-    checkInControls.style = `visibility: ${data.status === 1?'visible':'hidden'};`;
+    checkOutControls.style = `visibility: ${data.status === 0?'visible':'hidden; position: absolute;'};`;
+    checkInControls.style = `visibility: ${data.status === 1?'visible':'hidden; position: absolute;'};`;
   }
   
   checkOutButton.addEventListener("click", () => {

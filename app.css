@@ -7,28 +7,72 @@
  * Always set the map height explicitly to define the size of the div element
  * that contains the map. 
  */
+
+ #header
+ {
+  position: absolute; 
+  width: 100%;
+  z-index: 1000000;
+ }
+
+#logoImage
+{
+  height: 40px;
+  filter: drop-shadow(2px 2px black);
+}
+#logoWrapper
+{
+  width:fit-content;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  top: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: rgba(0,0,0,0.1);
+}
+
 .kontainer
 {
+  /*
   display: flex;
+  */
   flex-direction: column;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+
 }
- #map {
-  flex: 1;
-  }
-  #checkoutRegion {
-    flex:0;
-  }
+#map {
+  height: 100%;
+  width: 100%;
   
-  /* 
-   * Optional: Makes the sample page fill the window. 
-   */
-  html,
-  body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
+  background-color: yellowgreen;
+}
+#checkoutRegion {
+  width: 100%;
+  background-color: white;
+  
+  border-radius: 30px 30px 0px 0px;
+  position:fixed;
+  left:0px;
+  bottom:0px;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-bottom: 10px;
+}
+  
+/* 
+  * Optional: Makes the sample page fill the window. 
+  */
+html
+{
+  height: 100%;
+}
+body {
+  height: 100%;
+  margin: 0;
+  background-color: aqua;
+}
   
   
