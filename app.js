@@ -126,12 +126,36 @@ function initMap()
             selectBike(data);
           }
         }
+
+        function getColor(status)
+        {
+          if(status == 0)
+          {
+            // available
+            return '#00FF00';
+          }
+          if(status == 1)
+          {
+            // checked out
+            return '#FF0000';
+          }
+          if(status == 2)
+          {
+            // broken
+            return '#AA00AA';
+          }
+          if(status == 3)
+          {
+            // missing
+            return '#111111';
+          }
+        }
   
         var markerImage = {
           path: pinSVGFilled,
           anchor: new google.maps.Point(12,17),
           fillOpacity: 1,
-          fillColor: data.status==0 ? '#00FF00' : '#FF0000',
+          fillColor: getColor(data.status),
           strokeWeight: 3,
           strokeColor: "black",
           scale: 2,
