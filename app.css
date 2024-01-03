@@ -13,6 +13,7 @@
   position: absolute; 
   width: 100%;
   z-index: 100;
+  pointer-events: none;
  }
 
 #logoImage
@@ -22,6 +23,7 @@
 }
 #logoWrapper
 {
+  pointer-events: all;
   width:fit-content;
   display: block;
   margin-left: auto;
