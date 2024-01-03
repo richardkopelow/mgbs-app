@@ -27,17 +27,16 @@
         <br>
         <div id="checkoutRegion">
 
-            <div class="dropdown">
-                <button id="bikesListButton" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="form-floating">
+                <select class="form-select" id="bikesList">
                 
-                </button>
-                <ul id="bikesListContainer" class="dropdown-menu">
-                </ul>
+                </select>
+                <label for="floatingSelect">Selected Bike</label>
             </div>
             <br>
             <div id="checkOutControls">
                 <button id="checkOutButton" type="button" class="btn btn-success">Check Out</button> 
-                <button id="reportButton" type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reportModal">Report Issue</button> 
+                <button id="reportButton" type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reportModal" style="background-color: white;">Report Issue</button> 
             </div>
             <div id="checkInControls">
                 <button id="checkInButton" type="button" class="btn btn-danger">Check In</button> 

@@ -25,9 +25,8 @@ function initMap()
     zoom: 13,
     center: montclair,
   });
-
-  let bikesListButton = document.getElementById('bikesListButton');
-  let bikesListContainer = document.getElementById('bikesListContainer');
+      
+  let bikesListElement = document.getElementById('bikesList');
   let checkOutControls = document.getElementById('checkOutControls');
   let checkInControls = document.getElementById('checkInControls');
   
@@ -38,6 +37,7 @@ function initMap()
   
   let bikes = db.collection('BikeStatus');
   
+  bikesListElement.innerHTML = '';
   var markerList = [];
   
   // Pick your pin (hole or no hole)
@@ -49,10 +49,14 @@ function initMap()
   let selectedBike = false;
   function selectBike(data) {
     selectedBike = data;
-    bikesListButton.innerHTML = data.name;
+    bikesListElement.value = data.guid;
     checkOutControls.style = `visibility: ${data.status === 0?'visible':'hidden; position: absolute;'};`;
     checkInControls.style = `visibility: ${data.status === 1?'visible':'hidden; position: absolute;'};`;
   }
+  
+  bikesListElement.addEventListener("change", ()=>{
+    bikes.where('guid', '==', bikesListElement.value).get().then(qs=>selectBike(qs.docs[0].data()));
+  });
   
   checkOutButton.addEventListener("click", () => {
     bikes.where('guid', '==', selectedBike.guid).get().then(qs=>{
@@ -104,28 +108,20 @@ function initMap()
   });
   
   bikes.onSnapshot(qs=>{
+    bikesListElement.innerHTML = '';
       markerList.forEach(m => m.setMap(null));
       markerList = [];
-      bikesListContainer.innerHTML = '';
   
       qs.docs.forEach(doc=>{
         let data = doc.data();
-        let dropdownItemId = `bikeSelect${data.guid}`;
-        let li = document.createElement('li');
-        li.innerHTML = `<a id="${dropdownItemId}" class="dropdown-item" href="#">${data.name}</a>`;
-        let dropdownItem = li.firstChild;
-        dropdownItem.addEventListener('click', function(){
-          selectBike(data)
-        });
-        bikesListContainer.appendChild(li);
-
+        bikesListElement.innerHTML += `<option value=\"${data.guid}\">${data.name}</option>`;
         if(!selectedBike)
         {
           selectBike(data)
         }
         else
         {
-          if(selectedBike.guid === data.guid)
+          if(selectedBike.guid == data.guid)
           {
             selectBike(data);
           }
