@@ -12,7 +12,7 @@
  {
   position: absolute; 
   width: 100%;
-  z-index: 1000000;
+  z-index: 100;
  }
 
 #logoImage
@@ -59,7 +59,13 @@
   bottom:0px;
   padding-top: 15px;
   padding-left: 15px;
+  padding-right: 15px;
   padding-bottom: 10px;
+}
+
+#reportButton
+{
+  float: right;
 }
   
 /* 

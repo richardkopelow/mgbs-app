@@ -34,13 +34,56 @@
                 <ul id="bikesListContainer" class="dropdown-menu">
                 </ul>
             </div>
+            <br>
             <div id="checkOutControls">
-                <button id="checkOutButton" type="button" class="btn btn-success">Check out</button> 
+                <button id="checkOutButton" type="button" class="btn btn-success">Check Out</button> 
+                <button id="reportButton" type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reportModal">Report Issue</button> 
             </div>
             <div id="checkInControls">
-                <button id="checkInButton" type="button" class="btn btn-danger">Check in</button> 
+                <button id="checkInButton" type="button" class="btn btn-danger">Check In</button> 
             </div>
         </div>
     </div>
+
+    <div id="reportModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Report Bike Issue</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Missing
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                    <label class="form-check-label" for="flexCheckChecked">
+                      Flat Tire
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                    <label class="form-check-label" for="flexCheckChecked">
+                      Other
+                    </label>
+                  </div>
+                  <div class="form-floating">
+                    <textarea class="form-control" placeholder="Add details" id="floatingTextarea2" style="height: 100px"></textarea>
+                    <label for="floatingTextarea2">Details (optional)</label>
+                  </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Send Report</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
 </body>
 </html>
