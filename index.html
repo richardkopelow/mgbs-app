@@ -34,11 +34,11 @@
                 <label for="floatingSelect">Selected Bike</label>
             </div>
             <br>
-            <div id="checkOutControls">
+            <div id="checkOutControls" style="visibility: hidden; position: absolute;">
                 <button id="checkOutButton" type="button" class="btn btn-success">Check Out</button> 
                 <button id="reportButton" type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reportModal" style="background-color: white;">Report Issue</button> 
             </div>
-            <div id="checkInControls">
+            <div id="checkInControls" style="visibility: hidden; position: absolute;">
                 <button id="checkInButton" type="button" class="btn btn-danger">Check In</button> 
             </div>
         </div>
@@ -53,19 +53,19 @@
             </div>
             <div class="modal-body">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <input id="missingProblemCheckbox" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                     <label class="form-check-label" for="flexCheckDefault">
                       Missing
                     </label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                    <input id="flatProblemCheckbox" class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
                     <label class="form-check-label" for="flexCheckChecked">
                       Flat Tire
                     </label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                    <input id="otherProblemCheckbox" class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
                     <label class="form-check-label" for="flexCheckChecked">
                       Other
                     </label>
@@ -77,7 +77,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Send Report</button>
+              <button id="sendReportButton" type="button" class="btn btn-primary" data-bs-dismiss="modal">Send Report</button>
             </div>
           </div>
         </div>

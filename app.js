@@ -53,14 +53,19 @@ function initMap()
     checkOutControls.style = `visibility: ${data.status === 0?'visible':'hidden; position: absolute;'};`;
     checkInControls.style = `visibility: ${data.status === 1?'visible':'hidden; position: absolute;'};`;
   }
+
+  let bikeDocDict = {};
+  function getSelectedBikeDoc(callback)
+  {
+        callback(bikeDocDict[selectedBike.guid]);
+  }
   
   bikesListElement.addEventListener("change", ()=>{
-    bikes.where('guid', '==', bikesListElement.value).get().then(qs=>selectBike(qs.docs[0].data()));
+    selectBike(bikeDocDict[bikesListElement.value].data());
   });
   
   checkOutButton.addEventListener("click", () => {
-    bikes.where('guid', '==', selectedBike.guid).get().then(qs=>{
-      let doc = qs.docs[0];
+    getSelectedBikeDoc(doc=>{
       doc.ref.update({
         status: 1,
         lastChangeTime: firebase.firestore.FieldValue.serverTimestamp()
@@ -80,8 +85,7 @@ function initMap()
         const lat = position.coords.latitude;
         const long = position.coords.longitude;
   
-        bikes.where('guid', '==', selectedBike.guid).get().then(qs=>{
-          let doc = qs.docs[0];
+        getSelectedBikeDoc(doc=>{
           doc.ref.update({
             location: {
               _lat: lat,
@@ -91,6 +95,7 @@ function initMap()
             lastChangeTime: firebase.firestore.FieldValue.serverTimestamp()
           });
         });
+          
       },
       // Error callback function
       (error) => {
@@ -114,6 +119,7 @@ function initMap()
   
       qs.docs.forEach(doc=>{
         let data = doc.data();
+        bikeDocDict[data.guid] = doc;
         bikesListElement.innerHTML += `<option value=\"${data.guid}\">${data.name}</option>`;
         if(!selectedBike)
         {
@@ -181,6 +187,30 @@ function initMap()
         });
   
         markerList[markerList.length] = mark;
+
+
+        let sendReportButton = document.getElementById('sendReportButton');
+        sendReportButton.addEventListener('click', () => {
+            getSelectedBikeDoc(doc => {
+              // TODO: implement report sending
+              let missingCheck = document.getElementById("missingProblemCheckbox");
+              let flatCheck = document.getElementById("flatProblemCheckbox");
+              if(missingCheck.checked)
+              {
+                doc.ref.update({status: 3});
+              }
+              else
+              {
+                if(flatCheck.checked)
+                {
+                  doc.ref.update({status: 2});
+                }
+              }
+              missingCheck.checked = false;
+              flatCheck.checked = false;
+            });
+        });
+
       }
       );
   });
