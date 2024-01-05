@@ -33,7 +33,7 @@
                 </select>
                 <label for="floatingSelect">Selected Bike</label>
             </div>
-            <br>
+            Lock Code: 1253 <img src = "images/infoIcon.png" style="height: 1.5em;" data-bs-toggle="modal" data-bs-target="#infoModal">
             <div id="checkOutControls" style="visibility: hidden; position: absolute;">
                 <button id="checkOutButton" type="button" class="btn btn-success">Check Out</button> 
                 <button id="reportButton" type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reportModal" style="background-color: white;">Report Issue</button> 
@@ -82,7 +82,28 @@
           </div>
         </div>
       </div>
-      
+    
+      <div id="infoModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Info</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              To ride simply select the bike you want, check it out, unlock it, and ride away. When you're done,
+               lock it up in a public place and check it back in so that the next person can find it. 
+              <br><br>
+              <b>The code to all of our locks is 1253.</b>  
+              <br><br>
+              Happy Riding!
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
 </body>
 </html>
