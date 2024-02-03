@@ -31,6 +31,9 @@ function initMap() {
 
   let checkOutButton = document.getElementById('checkOutButton');
   let checkInButton = document.getElementById('checkInButton');
+  let locationRefreshButton = document.getElementById('locationRefreshButton');
+
+  let locationField = document.getElementById('locationField');
 
   const db = firebase.firestore(app);
 
@@ -40,6 +43,8 @@ function initMap() {
   bikesListElement.innerHTML = '';
   var markerList = [];
 
+  var location = null;
+
   // Pick your pin (hole or no hole)
   var pinSVGHole = "M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z";
   var labelOriginHole = new google.maps.Point(12, 15);
@@ -47,7 +52,49 @@ function initMap() {
   var labelOriginFilled = new google.maps.Point(12, -5);
 
   let selectedBike = false;
+
+  function getColor(status) {
+    if (status == 0) {
+      // available
+      return '#00FF00';
+    }
+    if (status == 1) {
+      // checked out
+      return '#FF0000';
+    }
+    if (status == 2) {
+      // missing
+      return '#111111';
+    }
+    if (status == 3) {
+      // broken
+      return '#AA00AA';
+    }
+  }
+
+  function GenerateMarkerImage(color){
+    return {
+      path: pinSVGFilled,
+      anchor: new google.maps.Point(12, 17),
+      fillOpacity: 1,
+      fillColor: color,
+      strokeWeight: 3,
+      strokeColor: "black",
+      scale: 2,
+      labelOrigin: labelOriginFilled
+    };
+  };
+
   function selectBike(data) {
+    setLocation(null);
+
+    if(selectedBike)
+    {
+      let currentMark = markerList[selectedBike.guid];
+      currentMark.setPosition(new google.maps.LatLng(selectedBike.location._lat, selectedBike.location._long));
+      currentMark.setIcon(GenerateMarkerImage(getColor(selectedBike.status)));
+    }
+
     selectedBike = data;
     bikesListElement.value = data.guid;
     checkOutControls.style = `visibility: ${data.status === 0 ? 'visible' : 'hidden; position: absolute;'};`;
@@ -72,7 +119,40 @@ function initMap() {
     });
   });
 
-  checkInButton.addEventListener("click", () => {
+  function setLocation(loc)
+  {
+    location = loc;
+    if(location)
+    {
+      locationField.value = `${loc.lat},${loc.long}`;
+      let mark = markerList[selectedBike.guid];
+      mark.setPosition(new google.maps.LatLng(loc.lat, loc.long));
+      mark.setIcon(GenerateMarkerImage("#000fff"));
+      checkInButton.disabled = false;
+    }
+    else
+    {
+      locationField.value = null;
+      checkInButton.disabled = true;
+    }
+  }
+  setLocation(null);
+
+  map.addListener("click", (mapsMouseEvent) => {
+    if(selectedBike.status == 1)
+    {
+      setLocation(
+        {
+          lat: mapsMouseEvent.latLng.lat(),
+          long: mapsMouseEvent.latLng.lng(),
+        }
+      );
+    }
+  });
+
+
+  function refreshLocation(callback)
+  {
     // Check if geolocation is supported by the browser
     if ("geolocation" in navigator) {
       // Prompt user for permission to access their location
@@ -83,29 +163,63 @@ function initMap() {
           const lat = position.coords.latitude;
           const long = position.coords.longitude;
 
-          getSelectedBikeDoc(doc => {
-            doc.ref.update({
-              location: {
-                _lat: lat,
-                _long: long,
-              },
-              status: 0,
-              lastChangeTime: firebase.firestore.FieldValue.serverTimestamp()
-            });
+          setLocation({
+            lat: lat,
+            long: long,
           });
-
+          if(callback)
+          {
+            callback();
+          }
         },
         // Error callback function
         (error) => {
           // Handle errors, e.g. user denied location sharing permissions
           console.error("Error getting user location:", error);
+          if(callback)
+          {
+            callback();
+          }
         }
       );
     } else {
       // Geolocation is not supported by the browser
       console.error("Geolocation is not supported by this browser.");
     }
+  }
+  
+  locationRefreshButton.addEventListener("click", () => {refreshLocation();});
 
+  function checkInBike()
+  {
+    getSelectedBikeDoc(doc => {
+      doc.ref.update({
+        location: {
+          _lat: location.lat,
+          _long: location.long,
+        },
+        status: 0,
+        lastChangeTime: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+  }
+
+  checkInButton.addEventListener("click", () => {
+    
+    if(!location)
+    {
+      refreshLocation(()=>{
+        if(location)
+        {
+          checkInBike();
+        }
+      });
+    }
+    else
+    {
+      checkInBike();
+    }
+    
   });
 
   let sendReportButton = document.getElementById('sendReportButton');
@@ -145,44 +259,6 @@ function initMap() {
       let data = doc.data();
       bikeDocDict[data.guid] = doc;
       bikesListElement.innerHTML += `<option value=\"${data.guid}\">${data.name}</option>`;
-      if (!selectedBike) {
-        selectBike(data)
-      }
-      else {
-        if (selectedBike.guid == data.guid) {
-          selectBike(data);
-        }
-      }
-
-      function getColor(status) {
-        if (status == 0) {
-          // available
-          return '#00FF00';
-        }
-        if (status == 1) {
-          // checked out
-          return '#FF0000';
-        }
-        if (status == 2) {
-          // missing
-          return '#111111';
-        }
-        if (status == 3) {
-          // broken
-          return '#AA00AA';
-        }
-      }
-
-      var markerImage = {
-        path: pinSVGFilled,
-        anchor: new google.maps.Point(12, 17),
-        fillOpacity: 1,
-        fillColor: getColor(data.status),
-        strokeWeight: 3,
-        strokeColor: "black",
-        scale: 2,
-        labelOrigin: labelOriginFilled
-      };
 
       var label = {
         text: data.name,
@@ -194,14 +270,23 @@ function initMap() {
         position: new google.maps.LatLng(data.location._lat, data.location._long),
         map,
         label: label,
-        icon: markerImage,
+        icon: GenerateMarkerImage(getColor(data.status)),
       });
 
       mark.addListener('click', () => {
         selectBike(data);
       });
 
-      markerList[markerList.length] = mark;
+      markerList[data.guid] = mark;
+
+      if (!selectedBike) {
+        selectBike(data)
+      }
+      else {
+        if (selectedBike.guid == data.guid) {
+          selectBike(data);
+        }
+      }
     }
     );
   });
