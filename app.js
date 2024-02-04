@@ -25,6 +25,41 @@ function initMap() {
     center: montclair,
   });
 
+  var clusterRenderer = {
+    render: (cluster, stats, map)=>{
+      let count = cluster.count;
+
+      // create svg url with fill color
+      const svg = window.btoa(`
+      <svg fill="#0010ff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+        <circle cx="120" cy="120" opacity=".6" r="70" />
+        <circle cx="120" cy="120" opacity=".3" r="90" />
+        <circle cx="120" cy="120" opacity=".2" r="110" />
+        <circle cx="120" cy="120" opacity=".1" r="130" />
+      </svg>`);
+
+      // create marker using svg icon
+      return new google.maps.Marker({
+        position: cluster.position,
+        icon: {
+          url: `data:image/svg+xml;base64,${svg}`,
+          scaledSize: new google.maps.Size(45, 45),
+        },
+        label: {
+          text: String(count),
+          color: "rgba(255,255,255,0.9)",
+          fontSize: "12px",
+        },
+        // adjust zIndex to be above other markers
+        zIndex: 1000 + count,
+      });
+    },
+  };
+  var clusterer = new markerClusterer.MarkerClusterer({
+    map: map,
+    renderer: clusterRenderer
+   });
+
   let bikesListElement = document.getElementById('bikesList');
   let checkOutControls = document.getElementById('checkOutControls');
   let checkInControls = document.getElementById('checkInControls');
@@ -72,7 +107,7 @@ function initMap() {
     }
   }
 
-  function GenerateMarkerImage(color){
+  function GenerateMarkerImage(color, labelOrigin){
     return {
       path: pinSVGFilled,
       anchor: new google.maps.Point(12, 17),
@@ -81,7 +116,7 @@ function initMap() {
       strokeWeight: 3,
       strokeColor: "black",
       scale: 2,
-      labelOrigin: labelOriginFilled
+      labelOrigin: labelOrigin??labelOriginFilled
     };
   };
 
@@ -93,6 +128,9 @@ function initMap() {
       let currentMark = markerList[selectedBike.guid];
       currentMark.setPosition(new google.maps.LatLng(selectedBike.location._lat, selectedBike.location._long));
       currentMark.setIcon(GenerateMarkerImage(getColor(selectedBike.status)));
+      clusterer.clearMarkers();
+      clusterer.addMarkers(markerList);
+      clusterer.render();
     }
 
     selectedBike = data;
@@ -124,8 +162,8 @@ function initMap() {
     location = loc;
     if(location)
     {
+      var mark = markerList[selectedBike.guid];
       locationField.value = `${loc.lat},${loc.long}`;
-      let mark = markerList[selectedBike.guid];
       mark.setPosition(new google.maps.LatLng(loc.lat, loc.long));
       mark.setIcon(GenerateMarkerImage("#000fff"));
       checkInButton.disabled = false;
@@ -135,6 +173,9 @@ function initMap() {
       locationField.value = null;
       checkInButton.disabled = true;
     }
+    clusterer.clearMarkers();
+    clusterer.addMarkers(markerList);
+    clusterer.render();
   }
   setLocation(null);
 
@@ -250,6 +291,7 @@ function initMap() {
     });
   });
 
+  
   bikes.onSnapshot(qs => {
     bikesListElement.innerHTML = '';
     markerList.forEach(m => m.setMap(null));
@@ -289,5 +331,8 @@ function initMap() {
       }
     }
     );
+    
+    clusterer.clearMarkers();
+    clusterer.addMarkers(markerList);
   });
 }
