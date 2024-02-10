@@ -329,8 +329,8 @@ function initMap() {
           selectBike(data);
         }
       }
-    }
-    );
+    });
+    selectBike(selectedBike);
     
     clusterer.clearMarkers();
     clusterer.addMarkers(markerList);
