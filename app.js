@@ -74,6 +74,7 @@ function initMap() {
 
   let bikes = db.collection('BikeStatus');
   let errorCollection = db.collection('IssueReports');
+  let transactionCollection = db.collection('Transactions');
 
   bikesListElement.innerHTML = '';
   var markerList = [];
@@ -153,6 +154,14 @@ function initMap() {
       doc.ref.update({
         status: 1,
         lastChangeTime: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+
+      transactionCollection.add({
+        bikeGuid: doc.data().guid,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 1,
+        location: doc.data().location,
       });
     });
   });
@@ -241,6 +250,17 @@ function initMap() {
         },
         status: 0,
         lastChangeTime: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+
+      transactionCollection.add({
+        bikeGuid: doc.data().guid,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 0,
+        location: {
+          _lat: location.lat,
+          _long: location.long,
+        },
       });
     });
   }
