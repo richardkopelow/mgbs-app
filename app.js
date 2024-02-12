@@ -62,6 +62,7 @@ function initMap() {
 
   let bikesListElement = document.getElementById('bikesList');
   let checkOutControls = document.getElementById('checkOutControls');
+  let checkOutText = document.getElementById('checkOutText');
   let checkInControls = document.getElementById('checkInControls');
 
   let checkOutButton = document.getElementById('checkOutButton');
@@ -138,6 +139,8 @@ function initMap() {
     bikesListElement.value = data.guid;
     checkOutControls.style = `visibility: ${data.status === 0 ? 'visible' : 'hidden; position: absolute;'};`;
     checkInControls.style = `visibility: ${data.status != 0 ? 'visible' : 'hidden; position: absolute;'};`;
+
+    checkOutText.innerHTML = `To check out this bike (<b>${selectedBike.name}</b>), tap the "Check Out" button.<br><br>Please remember to check the bike back in when you are finished.<br>1. Set the drop off location using GPS or by tapping on the map. <br>2. Finalize the check in by pressing the red "Check In" button.`;
   }
 
   let bikeDocDict = {};

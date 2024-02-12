@@ -36,7 +36,7 @@
             </div>
             Lock Code: 1253 <img src = "images/infoIcon.png" style="height: 1.5em;" data-bs-toggle="modal" data-bs-target="#infoModal">
             <div id="checkOutControls" style="visibility: hidden; position: absolute;">
-                <button id="checkOutButton" type="button" class="btn btn-success">Check Out</button> 
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkOutModal">Check Out</button> 
                 <button id="reportButton" type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reportModal" style="background-color: white;">Report Issue</button> 
             </div>
             <div id="checkInControls" style="visibility: hidden; position: absolute;">
@@ -106,6 +106,24 @@
               Happy Riding!
             </div>
             <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="checkOutModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Check Out</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="checkOutText" class="modal-body">
+              
+            </div>
+            <div class="modal-footer">
+              <button id="checkOutButton" type="button" class="btn btn-success" data-bs-dismiss="modal">Check Out</button> 
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
